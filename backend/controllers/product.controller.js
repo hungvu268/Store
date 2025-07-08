@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 export const getProducts = async (req, res) => {
   try {
     const products = await Product.find({});
-    res.status(200).json({ success: false, products });
+    res.status(200).json({ success: true, data: products });
   } catch (error) {
     console.error("Error fetching products:", error);
     res.status(500).json({ success: false, message: "Can not fetch products" });
