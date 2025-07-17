@@ -52,6 +52,13 @@ const Navbar = () => {
             </Link>
           )}
           <Button onClick={toggleColorMode}>{colorMode === "light" ? <IoMoon /> : <LuSun />}</Button>
+          {isLoggedIn && (
+            <Link to="/cart">
+              <Button colorScheme="teal" variant="outline">
+                Cart
+              </Button>
+            </Link>
+          )}
           {!isLoggedIn ? (
             <>
               <Link to="/login">

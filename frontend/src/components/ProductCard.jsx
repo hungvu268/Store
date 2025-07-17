@@ -22,7 +22,7 @@ import {
 import { useColorModeValue } from "@chakra-ui/react";
 import { useProductStore } from "../store/product";
 import React, { useState } from "react";
-import { set } from "mongoose";
+import { useCartStore } from "../store/cart";
 import { getUserRole } from "../utils/auth";
 
 const ProductCard = ({ product }) => {
@@ -34,7 +34,11 @@ const ProductCard = ({ product }) => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const isLoggedIn = !!localStorage.getItem("token");
+
   const isAdmin = getUserRole() === "admin";
+
+  const { addToCart } = useCartStore();
 
   const HandleDeleteProduct = async (pid) => {
     const { success, message } = await deleteProduct(pid);
@@ -96,12 +100,19 @@ const ProductCard = ({ product }) => {
         <Text fontWeight={"bold"} fontSize="xl" color={textColor} mb={4}>
           ${product.price}
         </Text>
-        {isAdmin && (
-          <HStack spacing={2}>
-            <IconButton icon={<EditIcon />} onClick={onOpen} colorScheme="blue" />
-            <IconButton icon={<DeleteIcon />} onClick={() => HandleDeleteProduct(product._id)} colorScheme="red" />
-          </HStack>
-        )}
+        <VStack align="start" spacing={3}>
+          {isLoggedIn && (
+            <Button colorScheme="green" size="sm" onClick={() => addToCart(product._id, 1)}>
+              Add to Cart
+            </Button>
+          )}
+          {isAdmin && (
+            <HStack spacing={2}>
+              <IconButton icon={<EditIcon />} onClick={onOpen} colorScheme="blue" />
+              <IconButton icon={<DeleteIcon />} onClick={() => HandleDeleteProduct(product._id)} colorScheme="red" />
+            </HStack>
+          )}
+        </VStack>
       </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
