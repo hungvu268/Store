@@ -23,6 +23,7 @@ import { useColorModeValue } from "@chakra-ui/react";
 import { useProductStore } from "../store/product";
 import React, { useState } from "react";
 import { set } from "mongoose";
+import { getUserRole } from "../utils/auth";
 
 const ProductCard = ({ product }) => {
   const [updatedProduct, setUpdatedProduct] = useState(product);
@@ -32,6 +33,8 @@ const ProductCard = ({ product }) => {
   const toast = useToast();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const isAdmin = getUserRole() === "admin";
 
   const HandleDeleteProduct = async (pid) => {
     const { success, message } = await deleteProduct(pid);
@@ -93,10 +96,12 @@ const ProductCard = ({ product }) => {
         <Text fontWeight={"bold"} fontSize="xl" color={textColor} mb={4}>
           ${product.price}
         </Text>
-        <HStack spacing={2}>
-          <IconButton icon={<EditIcon />} onClick={onOpen} colorScheme="blue" />
-          <IconButton icon={<DeleteIcon />} onClick={() => HandleDeleteProduct(product._id)} colorScheme="red" />
-        </HStack>
+        {isAdmin && (
+          <HStack spacing={2}>
+            <IconButton icon={<EditIcon />} onClick={onOpen} colorScheme="blue" />
+            <IconButton icon={<DeleteIcon />} onClick={() => HandleDeleteProduct(product._id)} colorScheme="red" />
+          </HStack>
+        )}
       </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
